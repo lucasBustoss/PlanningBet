@@ -10,7 +10,7 @@ using PlanningBet.Users.API.Database.Context;
 
 namespace PlanningBet.Users.API.Migrations
 {
-    [DbContext(typeof(PlanningDbContext))]
+    [DbContext(typeof(UsersDbContext))]
     partial class PlanningDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

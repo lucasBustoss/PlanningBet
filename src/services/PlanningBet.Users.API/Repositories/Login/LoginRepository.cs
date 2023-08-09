@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
-using PlanningBet.Users.API.Services;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -11,13 +10,11 @@ namespace PlanningBet.Users.API.Repositories.Login
     {
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IConfiguration _configuration;
-        private readonly JWTService _jwtConfiguration;
 
-        public LoginRepository(UserManager<IdentityUser> userManager, IConfiguration configuration, JWTService jwtConfiguration)
+        public LoginRepository(UserManager<IdentityUser> userManager, IConfiguration configuration)
         {
             _userManager = userManager;
             _configuration = configuration;
-            _jwtConfiguration = jwtConfiguration;
         }
 
         public string Login(string email, string password)
@@ -56,22 +53,6 @@ namespace PlanningBet.Users.API.Repositories.Login
             var token = tokenHandler.WriteToken(tokenObject);
 
             return token;
-        }
-
-        public bool Validate(string token)
-        {
-            var tokenHandler = new JwtSecurityTokenHandler();
-
-            try
-            {
-                tokenHandler.ValidateToken(token, _jwtConfiguration.Config(), out SecurityToken validatedToken);
-            }
-            catch
-            {
-                return false;
-            }
-
-            return true;
         }
     }
 }

@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace PlanningBet.Users.API.Database.Context;
 
-public class PlanningDbContext : IdentityDbContext<IdentityUser>
+public class UsersDbContext : IdentityDbContext<IdentityUser>
 {
-    public PlanningDbContext() { }
+    public UsersDbContext() { }
 
-    public PlanningDbContext(DbContextOptions<PlanningDbContext> options) : base(options) { }
+    public UsersDbContext(DbContextOptions<UsersDbContext> options) : base(options) { }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

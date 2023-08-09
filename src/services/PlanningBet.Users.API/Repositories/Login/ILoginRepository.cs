@@ -3,6 +3,5 @@
     public interface ILoginRepository
     {
         string Login(string email, string password);
-        bool Validate(string token);
     }
 }

@@ -11,7 +11,7 @@ using PlanningBet.Users.API.Database.Context;
 
 namespace PlanningBet.Users.API.Migrations
 {
-    [DbContext(typeof(PlanningDbContext))]
+    [DbContext(typeof(UsersDbContext))]
     [Migration("20230808121408_AddUsers")]
     partial class AddUsers
     {

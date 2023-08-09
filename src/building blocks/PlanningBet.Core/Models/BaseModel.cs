@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace PlanningBet.Core.Models;
 
-namespace PlanningBet.Core.Models
+public abstract class BaseModel
 {
-    public abstract class BaseModel
-    {
-        public virtual Guid Id { get; set; }
-    }
+    public virtual Guid Id { get; set; }
 }

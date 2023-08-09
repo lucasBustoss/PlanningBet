@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System.Net;
 using System.Text.Json;
-using System.Web.Http;
 
 namespace PlanningBet.Core.Middlewares;
 
@@ -23,13 +22,16 @@ public class InternalErrorHandlingMiddleware
             var a = context.Response.HttpContext.Request;
 
             if (context.Response.StatusCode == 401)
-                throw new HttpResponseException(HttpStatusCode.Unauthorized);
+                throw new BadHttpRequestException("Unauthorized", 401);
 
             if (context.Response.StatusCode == 403)
-                throw new HttpResponseException(HttpStatusCode.Forbidden);
+                throw new BadHttpRequestException("Forbidden", 403);
 
-            if (context.Response.StatusCode == 404 || context.Response.StatusCode == 405)
-                throw new HttpResponseException(HttpStatusCode.NotFound);
+            if (context.Response.StatusCode == 404)
+                throw new BadHttpRequestException("Not found", 404);
+
+            if (context.Response.StatusCode == 405)
+                throw new BadHttpRequestException("Not allowed", 405);
         }
         catch (Exception ex)
         {
@@ -48,13 +50,13 @@ public class InternalErrorHandlingMiddleware
             statusCode = HttpStatusCode.InternalServerError;
             error = "Dependency Injection Error";
         }
-        else if (exception is HttpResponseException)
+        else if (exception is BadHttpRequestException)
         {
-            var httpException = exception as HttpResponseException;
+            var httpException = exception as BadHttpRequestException;
 
             if (httpException != null)
             {
-                statusCode = httpException.Response.StatusCode;
+                statusCode = GetHttpStatusCode(httpException.StatusCode);
                 error = GetErrorMessage((int)statusCode);
             }
         }
@@ -89,8 +91,32 @@ public class InternalErrorHandlingMiddleware
             case 404:
                 return "Resource not found.";
 
+            case 405:
+                return "Not allowed.";
+
             default:
                 return "Internal server error.";
+        }
+    }
+
+    private static HttpStatusCode GetHttpStatusCode(int statusCode)
+    {
+        switch (statusCode)
+        {
+            case 401:
+                return HttpStatusCode.Unauthorized;
+
+            case 403:
+                return HttpStatusCode.Forbidden;
+
+            case 404:
+                return HttpStatusCode.NotFound;
+
+            case 405:
+                return HttpStatusCode.MethodNotAllowed;
+
+            default:
+                return HttpStatusCode.InternalServerError;
         }
     }
 }

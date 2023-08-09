@@ -32,17 +32,5 @@ namespace PlanningBet.Users.API.Controllers
                 return BadRequestResponse(ex.Message);
             }
         }
-
-        [AllowAnonymous]
-        [HttpPost("/api/validate")]
-        public ActionResult Validate([FromHeader]string authorization)
-        {
-            if (authorization == null || authorization == string.Empty) 
-                return BadRequestResponse("Token not provided. Token should pass by header");
-
-            var token = authorization.Split(' ')[1];
-            var validate = _repository.Validate(token);
-            return OkResponse(validate);
-        }
     }
 }

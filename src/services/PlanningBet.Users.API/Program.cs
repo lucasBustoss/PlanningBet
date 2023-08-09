@@ -1,57 +1,14 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
+using PlanningBet.Core.Config;
 using PlanningBet.Core.Middlewares;
-using PlanningBet.Users.API.Database.Context;
+using PlanningBet.Users.API.Config;
 using PlanningBet.Users.API.Repositories.Login;
 using PlanningBet.Users.API.Repositories.Users;
-using PlanningBet.Users.API.Services;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-#region DbContextConfig
-
-var connection = builder.Configuration.GetConnectionString("Postgres");
-builder.Services.AddDbContext<PlanningDbContext>(options => options.UseNpgsql(connection));
-
-#endregion
-
-#region IdentityConfig
-
-builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
-{
-    options.Password.RequireNonAlphanumeric = false;
-    options.Password.RequireDigit = false;
-    options.Password.RequireUppercase = false;
-    options.Password.RequireLowercase = false;
-    options.Password.RequiredLength = 1;
-}).AddEntityFrameworkStores<PlanningDbContext>();
-
-#endregion
-
-#region AuthorizationConfig
-
-builder.Services.AddSingleton<JWTService>();
-
-builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy("UserPolicy", p => p.RequireAuthenticatedUser().RequireClaim("Profession"));
-});
-
-builder.Services.AddAuthentication(x =>
-{
-    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer();
-
-builder.Services.AddOptions<JwtBearerOptions>(JwtBearerDefaults.AuthenticationScheme)
-    .Configure<IConfiguration>((options, configuration) =>
-    {
-        options.TokenValidationParameters = new JWTService(configuration).Config();
-    });
-
-#endregion
+builder.Services.AddIdentityConfiguration(builder.Configuration);
+builder.Services.AddApiConfiguration();
 
 #region RepositoriesConfig
 
@@ -73,18 +30,9 @@ builder.Services.AddSwaggerGen();
 var app = builder.Build();
 
 app.UseMiddleware<InternalErrorHandlingMiddleware>();
+app.UseApiConfiguration(app.Environment);
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-
-app.UseHttpsRedirection();
-
-app.UseAuthentication();
-app.UseAuthorization();
 
 app.MapControllers();
 
