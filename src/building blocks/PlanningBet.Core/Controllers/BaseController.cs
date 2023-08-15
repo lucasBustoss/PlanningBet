@@ -6,7 +6,7 @@ namespace PlanningBet.Core.Controllers;
 
 [ApiController]
 [Authorize]
-public abstract class MainController : ControllerBase
+public abstract class BaseController : ControllerBase
 {
     protected ActionResult OkResponse(object data)
     {

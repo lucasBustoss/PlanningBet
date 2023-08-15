@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using PlanningBet.Core.Config;
 using PlanningBet.Insights.API.Infra.Context;
+using PlanningBet.Insights.API.Messages;
 using PlanningBet.Insights.API.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -26,9 +27,10 @@ builder.Services.AddJwtConfig(builder.Configuration);
 
 #endregion
 
+builder.Services.AddHostedService<MessageConsumer>();
+
 // Add services to the container.
 
-builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

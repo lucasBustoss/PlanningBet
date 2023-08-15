@@ -19,8 +19,6 @@ public class InternalErrorHandlingMiddleware
         {
             await _next(context);
 
-            var a = context.Response.HttpContext.Request;
-
             if (context.Response.StatusCode == 401)
                 throw new BadHttpRequestException("Unauthorized", 401);
 

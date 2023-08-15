@@ -5,7 +5,7 @@ using PlanningBet.Insights.API.Repositories;
 namespace PlanningBet.Insights.API.Controllers
 {
     [Route("api/insights")]
-    public class InsightsController : MainController
+    public class InsightsController : BaseController
     {
         private readonly IInsightsRepository _repository;
 

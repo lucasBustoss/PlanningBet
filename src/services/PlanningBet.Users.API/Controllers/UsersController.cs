@@ -9,7 +9,7 @@ using PlanningBet.Users.API.Repositories.Users;
 namespace PlanningBet.Users.API.Controllers
 {
     [Route("api/users")]
-    public class UsersController : MainController, ICrudController<UserRequest>
+    public class UsersController : BaseController, ICrudController<UserRequest>
     {
         private readonly IUsersRepository _repository;
 

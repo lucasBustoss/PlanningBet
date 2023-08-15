@@ -8,7 +8,7 @@ using PlanningBet.Users.API.Repositories.Login;
 namespace PlanningBet.Users.API.Controllers
 {
     [Route("api/login")]
-    public class LoginController : MainController
+    public class LoginController : BaseController
     {
         private readonly ILoginRepository _repository;
 

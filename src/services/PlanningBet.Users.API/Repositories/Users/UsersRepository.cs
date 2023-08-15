@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using PlanningBet.Users.API.Mappers.User;
 using PlanningBet.Users.API.Models.User;
-using PlanningBet.Users.API.Models.User.Requests;
 using PlanningBet.Users.API.Models.User.Response;
-using System.Security.Claims;
 
 namespace PlanningBet.Users.API.Repositories.Users;
 

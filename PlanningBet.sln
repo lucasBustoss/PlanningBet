@@ -31,6 +31,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Stats", "Stats", "{529F69D4
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PlanningBet.Insights.API", "src\services\PlanningBet.Insights.API\PlanningBet.Insights.API.csproj", "{223E0F47-4DF4-49A0-AF37-A9C49A0BA7C9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlanningBet.Stats.API", "src\services\PlanningBet.Stats.API\PlanningBet.Stats.API.csproj", "{C5C001B7-AC04-48AE-9701-8A347F0B92E1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -49,6 +51,10 @@ Global
 		{223E0F47-4DF4-49A0-AF37-A9C49A0BA7C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{223E0F47-4DF4-49A0-AF37-A9C49A0BA7C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{223E0F47-4DF4-49A0-AF37-A9C49A0BA7C9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C5C001B7-AC04-48AE-9701-8A347F0B92E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C5C001B7-AC04-48AE-9701-8A347F0B92E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C5C001B7-AC04-48AE-9701-8A347F0B92E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C5C001B7-AC04-48AE-9701-8A347F0B92E1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -67,6 +73,7 @@ Global
 		{B969EEDF-8DFF-48EF-A2AA-45EDB10DB7D2} = {5E5E0FC0-C135-4890-8CF8-0919BF7AFA3B}
 		{529F69D4-2261-426A-9C2B-647593C0EA7A} = {5E5E0FC0-C135-4890-8CF8-0919BF7AFA3B}
 		{223E0F47-4DF4-49A0-AF37-A9C49A0BA7C9} = {54EAE377-43F2-4204-8CEA-DA68CED7E172}
+		{C5C001B7-AC04-48AE-9701-8A347F0B92E1} = {529F69D4-2261-426A-9C2B-647593C0EA7A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {82CF3150-EEB6-478B-AA80-D3FCA93C44BE}
