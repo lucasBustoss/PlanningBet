@@ -4,9 +4,6 @@ namespace PlanningBet.Stats.API.Models.ApiResponse.Leagues
 {
     public class LeagueResponse
     {
-        [JsonPropertyName("id")]
-        public int LeagueId { get; set; }
-
         [JsonPropertyName("name")]
         public string LeagueFullName { get; set; }
 

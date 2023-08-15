@@ -3,10 +3,12 @@ using PlanningBet.Stats.API.Messages;
 using PlanningBet.Stats.API.Models;
 using PlanningBet.Stats.API.Models.ApiResponse;
 using PlanningBet.Stats.API.Models.ApiResponse.Leagues;
+using PlanningBet.Stats.API.Models.ApiResponse.Leagues.LeagueStanding;
 using PlanningBet.Stats.API.Models.ApiResponse.Leagues.LeagueStatsInfo;
 using PlanningBet.Stats.API.Models.ApiResponse.Teams.TeamsResponse;
 using PlanningBet.Stats.API.Models.Messages;
 using PlanningBet.Stats.API.Models.Model.Leagues;
+using PlanningBet.Stats.API.Models.Model.Leagues.Standing;
 using PlanningBet.Stats.API.Models.Model.Teams;
 using System.Text;
 
@@ -33,7 +35,9 @@ namespace PlanningBet.Stats.API.Services
         public async void GetAllStats()
         {
             var leagues = await GetLeagues();
-            var teams = GetTeams(leagues);
+            var teams = await GetTeams(leagues);
+
+            GetLeagueStanding(leagues);
         }
 
         public void GetFixtures()
@@ -130,7 +134,7 @@ namespace PlanningBet.Stats.API.Services
             List<Team> teams = new List<Team>();
             foreach (var league in leagues)
             {
-                var teamsLeague = await GetTeamsFromLeague(league.SeasonId, 1, null);
+                var teamsLeague = await GetTeamsFromLeague(league.Code, 1, null);
                 teamsLeague.ForEach(tl =>
                 {
                     teams.Add(new Team(tl));
@@ -142,9 +146,16 @@ namespace PlanningBet.Stats.API.Services
             return teams;
         }
 
-        public void GetLeagueStanding()
+        public async void GetLeagueStanding(List<League> leagues)
         {
-            throw new NotImplementedException();
+            List<LeagueStanding> standings = new List<LeagueStanding>();
+            foreach (var league in leagues)
+            {
+                var standingRequest = await GetStandingFromLeague(league.Code);
+                standings.Add(new LeagueStanding(standingRequest));
+            }
+
+            _messageSender.SendMessage<LeagueStandingMessage>(standings.ToLeagueStandingMessage(), "standings");
         }
 
         #region Private methods
@@ -201,6 +212,14 @@ namespace PlanningBet.Stats.API.Services
             {
                 throw new ArgumentNullException();
             }
+        }
+
+        private async Task<LeagueStandingRequest> GetStandingFromLeague(int seasonId)
+        {
+            string queryString = $"key={_apiKey}&season_id={seasonId}";
+            var response = await _httpClient.GetFromJsonAsync<ApiResponse<LeagueStandingRequest>>($"league-tables?{queryString}");
+
+            return response.Data;
         }
 
         #endregion

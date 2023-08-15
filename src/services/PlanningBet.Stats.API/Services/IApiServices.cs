@@ -11,7 +11,7 @@ namespace PlanningBet.Stats.API.Services
         void GetFixtures();
         Task<List<League>> GetLeagues();
         Task<List<Team>> GetTeams(List<League> leagues);
-        void GetLeagueStanding();
+        void GetLeagueStanding(List<League> leagues);
         void GetLeagueMatches();
         void GetLastStats();
     }
