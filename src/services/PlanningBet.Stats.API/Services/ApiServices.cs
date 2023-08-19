@@ -3,11 +3,13 @@ using PlanningBet.Stats.API.Messages;
 using PlanningBet.Stats.API.Models;
 using PlanningBet.Stats.API.Models.ApiResponse;
 using PlanningBet.Stats.API.Models.ApiResponse.Leagues;
+using PlanningBet.Stats.API.Models.ApiResponse.Leagues.LeagueMatches;
 using PlanningBet.Stats.API.Models.ApiResponse.Leagues.LeagueStanding;
 using PlanningBet.Stats.API.Models.ApiResponse.Leagues.LeagueStatsInfo;
 using PlanningBet.Stats.API.Models.ApiResponse.Teams.TeamsResponse;
 using PlanningBet.Stats.API.Models.Messages;
 using PlanningBet.Stats.API.Models.Model.Leagues;
+using PlanningBet.Stats.API.Models.Model.Leagues.Matches;
 using PlanningBet.Stats.API.Models.Model.Leagues.Standing;
 using PlanningBet.Stats.API.Models.Model.Teams;
 using System.Text;
@@ -38,21 +40,6 @@ namespace PlanningBet.Stats.API.Services
             var teams = await GetTeams(leagues);
 
             GetLeagueStanding(leagues);
-        }
-
-        public void GetFixtures()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void GetLastStats()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void GetLeagueMatches()
-        {
-            throw new NotImplementedException();
         }
 
         public async Task<List<League>> GetLeagues()
@@ -114,7 +101,8 @@ namespace PlanningBet.Stats.API.Services
                     {
                         var country = countries.Where(c => c.CountryName == statsInfo.Country).FirstOrDefault();
 
-                        League league = new League(leagueResponse, seasonName, season.LeagueSeasonId, statsInfo.Name);
+                        var matches = await GetLeagueMatches(season.LeagueSeasonId);
+                        League league = new League(leagueResponse, seasonName, season.LeagueSeasonId, statsInfo.Name, matches);
                         leagues.Add(league);
                     }
                 }
@@ -158,6 +146,16 @@ namespace PlanningBet.Stats.API.Services
             _messageSender.SendMessage<LeagueStandingMessage>(standings.ToLeagueStandingMessage(), "standings");
         }
 
+        public void GetFixtures()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void GetLastStats()
+        {
+            throw new NotImplementedException();
+        }
+
         #region Private methods
 
         private async Task<List<Country>> GetCountries()
@@ -199,13 +197,13 @@ namespace PlanningBet.Stats.API.Services
 
             string queryString = $"key={_apiKey}&season_id={seasonId}";
             var response = await _httpClient.GetFromJsonAsync<ApiResponse<LeagueStatsInfoRequest>>($"league-season?{queryString}");
-            LeagueStatsInfoRequest leagueStatsInfoRequest;
+            LeagueStatsInfoRequest leagueStatsInfoResponse;
 
             if (response != null && response.Success && response.Pager != null && response.Pager.TotalResults > 0)
             {
-                leagueStatsInfoRequest = response.Data;
+                leagueStatsInfoResponse = response.Data;
 
-                LeagueStatsInfo leagueStatsInfo = new LeagueStatsInfo(leagueStatsInfoRequest);
+                LeagueStatsInfo leagueStatsInfo = new LeagueStatsInfo(leagueStatsInfoResponse);
                 return leagueStatsInfo;
             }
             else
@@ -220,6 +218,34 @@ namespace PlanningBet.Stats.API.Services
             var response = await _httpClient.GetFromJsonAsync<ApiResponse<LeagueStandingRequest>>($"league-tables?{queryString}");
 
             return response.Data;
+        }
+
+        private async Task<List<LeagueMatches>> GetLeagueMatches(int seasonId)
+        {
+            bool isValidSeasonId = _syncMode != "test" || (_syncMode == "test" && (seasonId == 1625 || seasonId == 2012 || seasonId == 4759));
+            if (!isValidSeasonId) throw new InvalidDataException();
+
+            string queryString = $"key={_apiKey}&season_id={seasonId}";
+            var response = await _httpClient.GetFromJsonAsync<ApiResponse<List<LeagueMatchesResponse>>>($"league-matches?{queryString}");
+            List<LeagueMatchesResponse> leagueMatchesResponse;
+
+            if (response != null && response.Success && response.Pager != null && response.Pager.TotalResults > 0)
+            {
+                leagueMatchesResponse = response.Data;
+                List<LeagueMatches> leagueMatches = new List<LeagueMatches>();
+
+                foreach (var leagueMatchResponse in leagueMatchesResponse)
+                {
+                    LeagueMatches leagueMatch = new LeagueMatches(leagueMatchResponse);
+                    leagueMatches.Add(leagueMatch);
+                }
+
+                return leagueMatches;
+            }
+            else
+            {
+                throw new ArgumentNullException();
+            }
         }
 
         #endregion
