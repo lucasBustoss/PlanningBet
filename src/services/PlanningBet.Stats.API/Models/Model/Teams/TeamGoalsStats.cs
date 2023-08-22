@@ -27,60 +27,48 @@ namespace PlanningBet.Stats.API.Models.Model.Teams
             GoalsConcededMin0To15Away = statsResponse.TeamGoalsConcededMin0To15Away;
             GoalsConcededMin16To30Away = statsResponse.TeamGoalsConcededMin16To30Away;
             GoalsConcededMin31To45Away = statsResponse.TeamGoalsConcededMin31To45Away;
-            GoalsScoredHome = statsResponse.GoalsScoredHome;
-            GoalsScoredAway = statsResponse.GoalsScoredAway;
-            GoalsConcededHome = statsResponse.GoalsConcededHome;
-            GoalsConcededAway = statsResponse.GoalsConcededAway;
         }
 
-        public int FirstGoalScoredOverall { get; set; }
+        public int FirstGoalScoredOverall { get; private set; }
 
-        public int FirstGoalScoredHome { get; set; }
+        public int FirstGoalScoredHome { get; private set; }
 
-        public int FirstGoalScoredAway { get; set; }
+        public int FirstGoalScoredAway { get; private set; }
 
-        public int GoalsScoredMin0To15Overall { get; set; }
+        public int GoalsScoredMin0To15Overall { get; private set; }
 
-        public int GoalsScoredMin16To30Overall { get; set; }
+        public int GoalsScoredMin16To30Overall { get; private set; }
 
-        public int GoalsScoredMin31To45Overall { get; set; }
+        public int GoalsScoredMin31To45Overall { get; private set; }
 
-        public int GoalsConcededMin0To15Overall { get; set; }
+        public int GoalsConcededMin0To15Overall { get; private set; }
 
-        public int GoalsConcededMin16To30Overall { get; set; }
+        public int GoalsConcededMin16To30Overall { get; private set; }
 
-        public int GoalsConcededMin31To45Overall { get; set; }
+        public int GoalsConcededMin31To45Overall { get; private set; }
 
-        public int GoalsScoredMin0To15Home { get; set; }
+        public int GoalsScoredMin0To15Home { get; private set; }
 
-        public int GoalsScoredMin16To30Home { get; set; }
+        public int GoalsScoredMin16To30Home { get; private set; }
 
-        public int GoalsScoredMin31To45Home { get; set; }
+        public int GoalsScoredMin31To45Home { get; private set; }
 
-        public int GoalsConcededMin0To15Home { get; set; }
+        public int GoalsConcededMin0To15Home { get; private set; }
 
-        public int GoalsConcededMin16To30Home { get; set; }
+        public int GoalsConcededMin16To30Home { get; private set; }
 
-        public int GoalsConcededMin31To45Home { get; set; }
+        public int GoalsConcededMin31To45Home { get; private set; }
 
-        public int GoalsScoredMin0To15Away { get; set; }
+        public int GoalsScoredMin0To15Away { get; private set; }
 
-        public int GoalsScoredMin16To30Away { get; set; }
+        public int GoalsScoredMin16To30Away { get; private set; }
 
-        public int GoalsScoredMin31To45Away { get; set; }
+        public int GoalsScoredMin31To45Away { get; private set; }
 
-        public int GoalsConcededMin0To15Away { get; set; }
+        public int GoalsConcededMin0To15Away { get; private set; }
 
-        public int GoalsConcededMin16To30Away { get; set; }
+        public int GoalsConcededMin16To30Away { get; private set; }
 
-        public int GoalsConcededMin31To45Away { get; set; }
-
-        public List<string> GoalsScoredHome { get; set; }
-
-        public List<string> GoalsScoredAway { get; set; }
-
-        public List<string> GoalsConcededHome { get; set; }
-
-        public List<string> GoalsConcededAway { get; set; }
+        public int GoalsConcededMin31To45Away { get; private set; }
     }
 }
