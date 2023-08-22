@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using PlanningBet.Insights.API.Infra.Context;
+﻿using PlanningBet.Insights.API.Infra.Context;
 using PlanningBet.Insights.API.Models;
 
 namespace PlanningBet.Insights.API.Repositories

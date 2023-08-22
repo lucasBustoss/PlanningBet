@@ -6,21 +6,21 @@ namespace PlanningBet.Stats.API.Models.Model.Teams
     {
         public TeamHTStats(TeamStatsResponse stats)
         {
-            WinPercentageHTHome = stats.TeamWinPercentageHTHome;
-            WinPercentageHTAway = stats.TeamWinPercentageHTAway;
-            WinPercentageHTOverall = stats.TeamWinPercentageHTOverall;
-            DrawPercentageHTHome = stats.TeamDrawPercentageHTHome;
-            DrawPercentageHTAway = stats.TeamDrawPercentageHTAway;
-            DrawPercentageHTOverall = stats.TeamDrawPercentageHTOverall;
-            LosePercentageHTHome = stats.TeamLosePercentageHTHome;
-            LosePercentageHTAway = stats.TeamLosePercentageHTAway;
-            LosePercentageHTOverall = stats.TeamLosePercentageHTOverall;
-            FailedToScorePercentageHTHome = stats.TeamFailedToScorePercentageHTHome;
-            FailedToScorePercentageHTAway = stats.TeamFailedToScorePercentageHTAway;
-            FailedToScorePercentageHTOverall = stats.TeamFailedToScorePercentageHTOverall;
-            CleanSheetPercentageHTHome = stats.TeamCleanSheetPercentageHTHome;
-            CleanSheetPercentageHTAway = stats.TeamCleanSheetPercentageHTAway;
-            CleanSheetPercentageHTOverall = stats.TeamCleanSheetPercentageHTOverall;
+            WinPercentageHTHome = stats.TeamWinPercentageHTHome / 100;
+            WinPercentageHTAway = stats.TeamWinPercentageHTAway / 100;
+            WinPercentageHTOverall = stats.TeamWinPercentageHTOverall / 100;
+            DrawPercentageHTHome = stats.TeamDrawPercentageHTHome / 100;
+            DrawPercentageHTAway = stats.TeamDrawPercentageHTAway / 100;
+            DrawPercentageHTOverall = stats.TeamDrawPercentageHTOverall / 100;
+            LosePercentageHTHome = stats.TeamLosePercentageHTHome / 100;
+            LosePercentageHTAway = stats.TeamLosePercentageHTAway / 100;
+            LosePercentageHTOverall = stats.TeamLosePercentageHTOverall / 100;
+            FailedToScorePercentageHTHome = stats.TeamFailedToScorePercentageHTHome / 100;
+            FailedToScorePercentageHTAway = stats.TeamFailedToScorePercentageHTAway / 100;
+            FailedToScorePercentageHTOverall = stats.TeamFailedToScorePercentageHTOverall / 100;
+            CleanSheetPercentageHTHome = stats.TeamCleanSheetPercentageHTHome / 100;
+            CleanSheetPercentageHTAway = stats.TeamCleanSheetPercentageHTAway / 100;
+            CleanSheetPercentageHTOverall = stats.TeamCleanSheetPercentageHTOverall / 100;
             GoalsScoredHTHome = stats.TeamGoalsScoredHTHome;
             GoalsScoredHTAway = stats.TeamGoalsScoredHTAway;
             GoalsScoredHTOverall = stats.TeamGoalsScoredHTOverall;
@@ -35,58 +35,58 @@ namespace PlanningBet.Stats.API.Models.Model.Teams
             AvgGoalsConcededHTOverall = stats.TeamAvgGoalsConcededHTOverall;
         }
 
-        public decimal WinPercentageHTHome { get; set; }
+        public decimal WinPercentageHTHome { get; private set; }
 
-        public decimal WinPercentageHTAway { get; set; }
+        public decimal WinPercentageHTAway { get; private set; }
 
-        public decimal WinPercentageHTOverall { get; set; }
+        public decimal WinPercentageHTOverall { get; private set; }
 
-        public decimal DrawPercentageHTHome { get; set; }
+        public decimal DrawPercentageHTHome { get; private set; }
 
-        public decimal DrawPercentageHTAway { get; set; }
+        public decimal DrawPercentageHTAway { get; private set; }
 
-        public decimal DrawPercentageHTOverall { get; set; }
+        public decimal DrawPercentageHTOverall { get; private set; }
 
-        public decimal LosePercentageHTHome { get; set; }
+        public decimal LosePercentageHTHome { get; private set; }
 
-        public decimal LosePercentageHTAway { get; set; }
+        public decimal LosePercentageHTAway { get; private set; }
 
-        public decimal LosePercentageHTOverall { get; set; }
+        public decimal LosePercentageHTOverall { get; private set; }
 
-        public decimal FailedToScorePercentageHTHome { get; set; }
+        public decimal FailedToScorePercentageHTHome { get; private set; }
 
-        public decimal FailedToScorePercentageHTAway { get; set; }
+        public decimal FailedToScorePercentageHTAway { get; private set; }
 
-        public decimal FailedToScorePercentageHTOverall { get; set; }
+        public decimal FailedToScorePercentageHTOverall { get; private set; }
 
-        public decimal CleanSheetPercentageHTHome { get; set; }
+        public decimal CleanSheetPercentageHTHome { get; private set; }
 
-        public decimal CleanSheetPercentageHTAway { get; set; }
+        public decimal CleanSheetPercentageHTAway { get; private set; }
 
-        public decimal CleanSheetPercentageHTOverall { get; set; }
+        public decimal CleanSheetPercentageHTOverall { get; private set; }
 
-        public int GoalsScoredHTHome { get; set; }
+        public int GoalsScoredHTHome { get; private set; }
 
-        public int GoalsScoredHTAway { get; set; }
+        public int GoalsScoredHTAway { get; private set; }
 
-        public int GoalsScoredHTOverall { get; set; }
+        public int GoalsScoredHTOverall { get; private set; }
 
-        public int GoalsConcededHTHome { get; set; }
+        public int GoalsConcededHTHome { get; private set; }
 
-        public int GoalsConcededHTAway { get; set; }
+        public int GoalsConcededHTAway { get; private set; }
 
-        public int GoalsConcededHTOverall { get; set; }
+        public int GoalsConcededHTOverall { get; private set; }
 
-        public decimal AvgGoalsScoredHTHome { get; set; }
+        public decimal AvgGoalsScoredHTHome { get; private set; }
 
-        public decimal AvgGoalsScoredHTAway { get; set; }
+        public decimal AvgGoalsScoredHTAway { get; private set; }
 
-        public decimal AvgGoalsScoredHTOverall { get; set; }
+        public decimal AvgGoalsScoredHTOverall { get; private set; }
 
-        public decimal AvgGoalsConcededHTHome { get; set; }
+        public decimal AvgGoalsConcededHTHome { get; private set; }
 
-        public decimal AvgGoalsConcededHTAway { get; set; }
+        public decimal AvgGoalsConcededHTAway { get; private set; }
 
-        public decimal AvgGoalsConcededHTOverall { get; set; }
+        public decimal AvgGoalsConcededHTOverall { get; private set; }
     }
 }

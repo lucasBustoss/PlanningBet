@@ -6,7 +6,6 @@ namespace PlanningBet.Stats.API.Models.Model.Teams
     {
         public Team(TeamResponse teamResponse)
         {
-            Id = Guid.NewGuid();
             Code = teamResponse.TeamId;
             Name = teamResponse.TeamName;
             CleanName = teamResponse.TeamCleanName;
@@ -20,8 +19,6 @@ namespace PlanningBet.Stats.API.Models.Model.Teams
             FTStats = new TeamFTStats(teamResponse.TeamStats);
             GoalsStats = new TeamGoalsStats(teamResponse.TeamStats);
         }
-
-        public Guid Id { get; private set; }
 
         public int Code { get; private set; }
 
