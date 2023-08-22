@@ -15,11 +15,11 @@ namespace PlanningBet.Bets.API.Controllers
         }
 
         [HttpPost]
-        public ActionResult SyncBets()
+        public async Task<ActionResult> SyncBets()
         {
-            _apiServices.SyncBets();
+            var bets = await _apiServices.SyncBets();
 
-            return OkResponse(new { message = "OK" });
+            return OkResponse(bets);
         }
     }
 }

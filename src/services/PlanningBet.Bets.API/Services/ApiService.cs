@@ -1,4 +1,6 @@
-﻿using PlanningBet.Bets.API.Models.Response;
+﻿using PlanningBet.Bets.API.Mappers;
+using PlanningBet.Bets.API.Models.Entity;
+using PlanningBet.Bets.API.Models.Response;
 using PlanningBet.Bets.API.Models.Response.ListClearedOrders;
 using System.Net.Http;
 using System.Text;
@@ -13,6 +15,7 @@ namespace PlanningBet.Bets.API.Services
         public readonly string _apiKey;
         public readonly string _username;
         public readonly string _password;
+        public readonly string _startDate;
 
         public ApiService(IConfiguration configuration)
         {
@@ -20,6 +23,7 @@ namespace PlanningBet.Bets.API.Services
             _apiKey = configuration.GetValue<string>("Betfair:ApiKey");
             _username = configuration.GetValue<string>("Betfair:User");
             _password = configuration.GetValue<string>("Betfair:Password");
+            _startDate = configuration.GetValue<string>("Betfair:StartDate");
 
             _httpClient = new HttpClient() { BaseAddress = new Uri(_apiUrl) };
             _httpClient.DefaultRequestHeaders.TryAddWithoutValidation("Content-Type", "application/json");
@@ -27,23 +31,38 @@ namespace PlanningBet.Bets.API.Services
             _httpClient.DefaultRequestHeaders.Add("X-Application", _apiKey);
         }
 
-        public async void SyncBets()
+        public async Task<List<BetEntity>> SyncBets()
         {
             var token = await GetAuthToken();
 
             _httpClient.DefaultRequestHeaders.Add("X-Authentication", token);
 
-            var body = new Dictionary<string, string>
+            var body = new Dictionary<string, object>
             {
-                { "betStatus", "SETTLED" }
+                { "betStatus", "SETTLED" },
+                { "includeItemDescription", "true"  },
+                { "settledDateRange", new Dictionary<string, string>
+                    {
+                        { "from", _startDate }
+                    }
+                }
             };
 
             var request = await _httpClient.PostAsJsonAsync("listClearedOrders/", body);
 
-            if(request.IsSuccessStatusCode)
+            if (request.IsSuccessStatusCode)
             {
                 var responseString = await request.Content.ReadAsStringAsync();
                 ListClearedOrdersResponse response = JsonSerializer.Deserialize<ListClearedOrdersResponse>(responseString);
+
+                return response.Bets.ToEntity();
+            }
+            else
+            {
+                var errorMessage = JsonSerializer.Deserialize<object>(await request.Content.ReadAsStringAsync());
+                Console.WriteLine(errorMessage);
+                Console.WriteLine(request.StatusCode);
+                return null;
             }
         }
 
@@ -68,7 +87,7 @@ namespace PlanningBet.Bets.API.Services
 
             var request = await httpAuth.PostAsync("", content);
 
-            if(request.IsSuccessStatusCode)
+            if (request.IsSuccessStatusCode)
             {
                 string responseString = await request.Content.ReadAsStringAsync();
                 AuthResponse response = JsonSerializer.Deserialize<AuthResponse>(responseString);
