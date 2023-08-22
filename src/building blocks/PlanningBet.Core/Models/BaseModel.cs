@@ -1,4 +1,7 @@
-﻿namespace PlanningBet.Core.Models;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
+
+namespace PlanningBet.Core.Models;
 
 public abstract class BaseModel
 {

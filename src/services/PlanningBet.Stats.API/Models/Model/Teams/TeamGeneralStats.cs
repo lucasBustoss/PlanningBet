@@ -1,5 +1,4 @@
 ﻿using PlanningBet.Stats.API.Models.ApiResponse.Teams.TeamsResponse;
-using System.Text.Json.Serialization;
 
 namespace PlanningBet.Stats.API.Models.Model.Teams
 {
@@ -16,18 +15,18 @@ namespace PlanningBet.Stats.API.Models.Model.Teams
             TotalWinsHome = stats.TeamTotalWinsHome;
             TotalWinsAway = stats.TeamTotalWinsAway;
             TotalWinsOverall = stats.TeamTotalWinsOverall;
-            WinsPercentageHome = stats.TeamWinsPercentageHome;
-            WinsPercentageAway = stats.TeamWinsPercentageAway;
-            WinsPercentageOverall = stats.TeamWinsPercentageOverall;
-            FirstGoalScoredPercentageHome = stats.TeamFirstGoalScoredPercentageHome;
-            FirstGoalScoredPercentageAway = stats.TeamFirstGoalScoredPercentageAway;
-            FirstGoalScoredPercentageOverall = stats.TeamFirstGoalScoredPercentageOverall;
-            CleanSheetPercentageHome = stats.TeamCleanSheetPercentageHome;
-            CleanSheetPercentageAway = stats.TeamCleanSheetPercentageAway;
-            CleanSheetPercentageOverall = stats.TeamCleanSheetPercentageOverall;
-            FailedToScorePercentageHome = stats.TeamFailedToScorePercentageHome;
-            FailedToScorePercentageAway = stats.TeamFailedToScorePercentageAway;
-            FailedToScorePercentageOverall = stats.TeamFailedToScorePercentageOverall;
+            WinsPercentageHome = stats.TeamWinsPercentageHome / 100;
+            WinsPercentageAway = stats.TeamWinsPercentageAway / 100;
+            WinsPercentageOverall = stats.TeamWinsPercentageOverall / 100;
+            FirstGoalScoredPercentageHome = stats.TeamFirstGoalScoredPercentageHome / 100;
+            FirstGoalScoredPercentageAway = stats.TeamFirstGoalScoredPercentageAway / 100;
+            FirstGoalScoredPercentageOverall = stats.TeamFirstGoalScoredPercentageOverall / 100;
+            CleanSheetPercentageHome = stats.TeamCleanSheetPercentageHome / 100;
+            CleanSheetPercentageAway = stats.TeamCleanSheetPercentageAway / 100;
+            CleanSheetPercentageOverall = stats.TeamCleanSheetPercentageOverall / 100;
+            FailedToScorePercentageHome = stats.TeamFailedToScorePercentageHome / 100;
+            FailedToScorePercentageAway = stats.TeamFailedToScorePercentageAway / 100;
+            FailedToScorePercentageOverall = stats.TeamFailedToScorePercentageOverall / 100;
             BothTeamsToScoredHome = stats.TeamBothTeamsToScoredHome;
             BothTeamsToScoredAway = stats.TeamBothTeamsToScoredAway;
             BothTeamsToScoredOverall = stats.TeamBothTeamsToScoredOverall;
