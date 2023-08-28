@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using PlanningBet.Core.Config;
-using PlanningBet.Insights.API.Infra.Context;
+using PlanningBet.Insights.API.Database;
 using PlanningBet.Insights.API.Messages;
 using PlanningBet.Insights.API.Repositories;
 

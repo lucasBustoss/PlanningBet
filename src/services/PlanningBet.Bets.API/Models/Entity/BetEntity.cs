@@ -1,10 +1,10 @@
-﻿using PlanningBet.Bets.API.Models.Response.ListClearedOrders;
+﻿using PlanningBet.Bets.API.Models.Response.ListClearedOrders.Bets;
 
 namespace PlanningBet.Bets.API.Models.Entity
 {
     public class BetEntity
     {
-        public BetEntity(BetsResponse betResponse)
+        public BetEntity(BetsResponse betResponse, Guid homeTeamId, Guid awayTeamId, Guid pickTeamId)
         {
             EventId = betResponse.EventId;
             MarketId = betResponse.MarketId;
@@ -18,7 +18,7 @@ namespace PlanningBet.Bets.API.Models.Entity
             PriceSettled = betResponse.SizeSettled;
             Profit = betResponse.Profit;
 
-            BetDetail = new BetDetailEntity(betResponse.MatchDescription);
+            BetDetail = new BetDetailEntity(betResponse.MatchDescription, homeTeamId, awayTeamId, pickTeamId);
         }
 
         public string EventId { get; set; }

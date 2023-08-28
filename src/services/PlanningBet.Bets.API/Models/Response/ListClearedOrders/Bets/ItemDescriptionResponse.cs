@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace PlanningBet.Bets.API.Models.Response.ListClearedOrders
+namespace PlanningBet.Bets.API.Models.Response.ListClearedOrders.Bets
 {
     public class ItemDescriptionResponse
     {

@@ -4,6 +4,6 @@ namespace PlanningBet.Bets.API.Services
 {
     public interface IApiService
     {
-        Task<List<BetEntity>> SyncBets();
+        Task<List<BetEntity>> SyncBets(string auth);
     }
 }

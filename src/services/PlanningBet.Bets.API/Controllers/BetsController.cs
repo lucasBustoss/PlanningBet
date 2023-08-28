@@ -17,9 +17,17 @@ namespace PlanningBet.Bets.API.Controllers
         [HttpPost]
         public async Task<ActionResult> SyncBets()
         {
-            var bets = await _apiServices.SyncBets();
+            var bearer = Request.Headers["Authorization"];
 
-            return OkResponse(bets);
+            if(bearer != string.Empty)
+            {
+                var token = bearer.ToString().Split(' ')[1];
+                var bets = await _apiServices.SyncBets(token);
+
+                return OkResponse(bets);
+            }
+
+            return BadRequest();
         }
     }
 }

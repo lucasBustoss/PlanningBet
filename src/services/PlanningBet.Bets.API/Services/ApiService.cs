@@ -2,7 +2,10 @@
 using PlanningBet.Bets.API.Models.Entity;
 using PlanningBet.Bets.API.Models.Response;
 using PlanningBet.Bets.API.Models.Response.ListClearedOrders;
+using PlanningBet.Bets.API.Models.Response.Teams;
+using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 
@@ -31,7 +34,7 @@ namespace PlanningBet.Bets.API.Services
             _httpClient.DefaultRequestHeaders.Add("X-Application", _apiKey);
         }
 
-        public async Task<List<BetEntity>> SyncBets()
+        public async Task<List<BetEntity>> SyncBets(string auth)
         {
             var token = await GetAuthToken();
 
@@ -52,10 +55,24 @@ namespace PlanningBet.Bets.API.Services
 
             if (request.IsSuccessStatusCode)
             {
-                var responseString = await request.Content.ReadAsStringAsync();
-                ListClearedOrdersResponse response = JsonSerializer.Deserialize<ListClearedOrdersResponse>(responseString);
+                HttpClient httpPlanning = new HttpClient();
+                httpPlanning.BaseAddress = new Uri("http://localhost:5004/api/");
+                httpPlanning.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", auth);
 
-                return response.Bets.ToEntity();
+                var requestTeams = await httpPlanning.GetAsync("teams");
+
+                if (requestTeams.IsSuccessStatusCode)
+                {
+                    var responseString = await request.Content.ReadAsStringAsync();
+                    var responseTeamsString = await requestTeams.Content.ReadAsStringAsync();
+
+                    ListClearedOrdersResponse response = JsonSerializer.Deserialize<ListClearedOrdersResponse>(responseString);
+                    TeamsResponse responseTeam = JsonSerializer.Deserialize<TeamsResponse>(responseTeamsString);
+
+                    return response.Orders.ToEntity(responseTeam.Teams);
+                }
+
+                return new List<BetEntity>();
             }
             else
             {
