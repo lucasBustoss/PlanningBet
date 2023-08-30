@@ -8,7 +8,7 @@ namespace PlanningBet.Stats.API.Services
     public interface IApiServices
     {
         void GetAllStats();
-        void GetFixtures();
+        void GetFixtures(List<League> leagues);
         Task<List<League>> GetLeagues();
         Task<List<Team>> GetTeams(List<League> leagues);
         void GetLeagueStanding(List<League> leagues);

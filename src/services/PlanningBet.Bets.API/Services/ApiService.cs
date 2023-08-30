@@ -1,12 +1,13 @@
-﻿using PlanningBet.Bets.API.Mappers;
+﻿using Microsoft.Extensions.Logging;
+using PlanningBet.Bets.API.Mappers;
 using PlanningBet.Bets.API.Models.Entity;
 using PlanningBet.Bets.API.Models.Response;
 using PlanningBet.Bets.API.Models.Response.ListClearedOrders;
+using PlanningBet.Bets.API.Models.Response.ListClearedOrders.Bets;
+using PlanningBet.Bets.API.Models.Response.ListClearedOrders.Events;
 using PlanningBet.Bets.API.Models.Response.Teams;
-using System.Net;
-using System.Net.Http;
+using PlanningBet.Insights.API.Repositories;
 using System.Net.Http.Headers;
-using System.Text;
 using System.Text.Json;
 
 namespace PlanningBet.Bets.API.Services
@@ -14,14 +15,18 @@ namespace PlanningBet.Bets.API.Services
     public class ApiService : IApiService
     {
         public readonly HttpClient _httpClient;
+        private readonly IBetsRepository _repository;
         public readonly string _apiUrl;
         public readonly string _apiKey;
         public readonly string _username;
         public readonly string _password;
         public readonly string _startDate;
+        private string _token;
 
-        public ApiService(IConfiguration configuration)
+        public ApiService(IConfiguration configuration, IBetsRepository repository)
         {
+            _repository = repository;
+            
             _apiUrl = configuration.GetValue<string>("Betfair:AppUrl");
             _apiKey = configuration.GetValue<string>("Betfair:ApiKey");
             _username = configuration.GetValue<string>("Betfair:User");
@@ -32,55 +37,27 @@ namespace PlanningBet.Bets.API.Services
             _httpClient.DefaultRequestHeaders.TryAddWithoutValidation("Content-Type", "application/json");
             _httpClient.DefaultRequestHeaders.Add("Accept", "application/json");
             _httpClient.DefaultRequestHeaders.Add("X-Application", _apiKey);
+
+            _token = Login();
+            _httpClient.DefaultRequestHeaders.Add("X-Authentication", _token);
         }
 
-        public async Task<List<BetEntity>> SyncBets(string auth)
+        public string Login()
         {
-            var token = await GetAuthToken();
+            return GetAuthToken().Result;
+        }
 
-            _httpClient.DefaultRequestHeaders.Add("X-Authentication", token);
+        public async Task<List<EventEntity>> SyncBets(string auth)
+        {
+            var events = await GetEvents(auth);
 
-            var body = new Dictionary<string, object>
-            {
-                { "betStatus", "SETTLED" },
-                { "includeItemDescription", "true"  },
-                { "settledDateRange", new Dictionary<string, string>
-                    {
-                        { "from", _startDate }
-                    }
-                }
-            };
+            Dictionary<Guid, string> eventsIds = new Dictionary<Guid, string>();
+            foreach (var betEvent in events)
+                eventsIds.Add(betEvent.Id, betEvent.EventCode);
 
-            var request = await _httpClient.PostAsJsonAsync("listClearedOrders/", body);
-
-            if (request.IsSuccessStatusCode)
-            {
-                HttpClient httpPlanning = new HttpClient();
-                httpPlanning.BaseAddress = new Uri("http://localhost:5004/api/");
-                httpPlanning.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", auth);
-
-                var requestTeams = await httpPlanning.GetAsync("teams");
-
-                if (requestTeams.IsSuccessStatusCode)
-                {
-                    var responseString = await request.Content.ReadAsStringAsync();
-                    var responseTeamsString = await requestTeams.Content.ReadAsStringAsync();
-
-                    ListClearedOrdersResponse response = JsonSerializer.Deserialize<ListClearedOrdersResponse>(responseString);
-                    TeamsResponse responseTeam = JsonSerializer.Deserialize<TeamsResponse>(responseTeamsString);
-
-                    return response.Orders.ToEntity(responseTeam.Teams);
-                }
-
-                return new List<BetEntity>();
-            }
-            else
-            {
-                var errorMessage = JsonSerializer.Deserialize<object>(await request.Content.ReadAsStringAsync());
-                Console.WriteLine(errorMessage);
-                Console.WriteLine(request.StatusCode);
-                return null;
-            }
+            await GetBets(auth, eventsIds);
+            
+            return events;
         }
 
         #region Private methods
@@ -114,6 +91,104 @@ namespace PlanningBet.Bets.API.Services
             return token;
         }
 
-        #endregion
+        private async Task<List<EventEntity>> GetEvents(string auth)
+        {
+            var body = new Dictionary<string, object>
+            {
+                { "betStatus", "SETTLED" },
+                { "includeItemDescription", "true"  },
+                { "settledDateRange", new Dictionary<string, string>
+                    {
+                        { "from", _startDate }
+                    }
+                },
+                { "groupBy", "EVENT" }
+            };
+
+            var request = await _httpClient.PostAsJsonAsync("listClearedOrders/", body);
+
+            if (request.IsSuccessStatusCode)
+            {
+                var teams = await GetTeams(auth);
+                string responseString = await request.Content.ReadAsStringAsync();
+                ListClearedOrdersResponse<EventsResponse> response = JsonSerializer.Deserialize<ListClearedOrdersResponse<EventsResponse>>(responseString);
+
+                var events = response.Orders.ToEventEntity(teams);
+
+                await _repository.CreateOrUpdateEvents(events);
+
+                return events;
+            }
+            else
+            {
+                var errorMessage = JsonSerializer.Deserialize<object>(await request.Content.ReadAsStringAsync());
+                Console.WriteLine(errorMessage);
+                Console.WriteLine(request.StatusCode);
+                return null;
+            }
+        }
+
+        private async Task<List<BetEntity>> GetBets(string auth, Dictionary<Guid, string> events)
+        {
+            var eventCodes = events.Values.ToList();
+            
+            var body = new Dictionary<string, object>
+            {
+                { "betStatus", "SETTLED" },
+                { "includeItemDescription", "true"  },
+                { "eventIds",  eventCodes },
+                { "settledDateRange", new Dictionary<string, string>
+                    {
+                        { "from", _startDate }
+                    }
+                }
+            };
+
+            var request = await _httpClient.PostAsJsonAsync("listClearedOrders/", body);
+
+            if (request.IsSuccessStatusCode)
+            {
+                var teams = await GetTeams(auth);
+                string responseString = await request.Content.ReadAsStringAsync();
+                ListClearedOrdersResponse<BetsResponse> response = JsonSerializer.Deserialize<ListClearedOrdersResponse<BetsResponse>>(responseString);
+
+                var bets = response.Orders.ToBetEntity(teams, events);
+                await _repository.CreateOrUpdateBets(bets);
+
+                return bets;
+            }
+            else
+            {
+                var errorMessage = JsonSerializer.Deserialize<object>(await request.Content.ReadAsStringAsync());
+                Console.WriteLine(errorMessage);
+                Console.WriteLine(request.StatusCode);
+                return null;
+            }
+        }
+
+        private async Task<List<Team>> GetTeams(string auth)
+        {
+            HttpClient httpPlanning = new HttpClient();
+            httpPlanning.BaseAddress = new Uri("http://localhost:5004/api/");
+            httpPlanning.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", auth);
+
+            var request = await httpPlanning.GetAsync("teams");
+
+            if (request.IsSuccessStatusCode)
+            {
+                var responseTeamsString = await request.Content.ReadAsStringAsync();
+
+                TeamsResponse responseTeam = JsonSerializer.Deserialize<TeamsResponse>(responseTeamsString);
+                return responseTeam.Teams;
+            } else
+            {
+                var errorMessage = JsonSerializer.Deserialize<object>(await request.Content.ReadAsStringAsync());
+                Console.WriteLine(errorMessage);
+                Console.WriteLine(request.StatusCode);
+                return null;
+            }
+
+            #endregion
+        }
     }
 }

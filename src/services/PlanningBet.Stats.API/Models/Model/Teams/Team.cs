@@ -1,4 +1,5 @@
 ﻿using PlanningBet.Stats.API.Models.ApiResponse.Teams.TeamsResponse;
+using PlanningBet.Stats.API.Models.Model.Leagues.Matches;
 
 namespace PlanningBet.Stats.API.Models.Model.Teams
 {

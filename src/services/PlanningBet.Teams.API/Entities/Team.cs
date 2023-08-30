@@ -1,4 +1,5 @@
 ﻿using PlanningBet.Core.Models;
+using PlanningBet.Teams.API.Entities.TeamMatches;
 
 namespace PlanningBet.Teams.API.Entities
 {
@@ -18,5 +19,6 @@ namespace PlanningBet.Teams.API.Entities
         public TeamHTStats HTStats { get; set; }
         public TeamFTStats FTStats { get; set; }
         public TeamGoalsStats GoalsStats { get; set; }
+        public List<TeamMatch> Matches { get; set; }
     }
 }

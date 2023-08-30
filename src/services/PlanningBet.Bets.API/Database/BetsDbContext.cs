@@ -9,6 +9,7 @@ namespace PlanningBet.Bets.API.Database
 
         public BetsDbContext(DbContextOptions<BetsDbContext> options) : base(options) { }
 
+        public DbSet<EventEntity> Events { get; set; }
         public DbSet<BetEntity> Bets { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
