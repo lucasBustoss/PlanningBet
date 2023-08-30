@@ -1,21 +1,19 @@
-﻿using Microsoft.EntityFrameworkCore;
-using PlanningBet.Teams.API.Database;
-using PlanningBet.Teams.API.Entities;
-using PlanningBet.Teams.API.Repositories;
+﻿using PlanningBet.Leagues.API.Entities;
+using PlanningBet.Leagues.API.Repositories;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System.Text;
 using System.Text.Json;
 
-namespace PlanningBet.Teams.API.Messages
+namespace PlanningBet.Leagues.API.Messages
 {
     public class MessageConsumer : BackgroundService
     {
         private IConnection _connection;
         private IModel _channel;
-        TeamsRepository _repository;
+        LeaguesRepository _repository;
 
-        public MessageConsumer(TeamsRepository repository)
+        public MessageConsumer(LeaguesRepository repository)
         {
             _repository = repository;
 
@@ -28,7 +26,7 @@ namespace PlanningBet.Teams.API.Messages
 
             _connection = factory.CreateConnection();
             _channel = _connection.CreateModel();
-            _channel.QueueDeclare("teams", false, false, false, null);
+            _channel.QueueDeclare("leagues", false, false, false, null);
         }
 
         protected override Task ExecuteAsync(CancellationToken stoppingToken)
@@ -38,21 +36,21 @@ namespace PlanningBet.Teams.API.Messages
             consumer.Received += (channel, evt) =>
             {
                 var content = Encoding.UTF8.GetString(evt.Body.ToArray());
-                var message = JsonSerializer.Deserialize<TeamMessage>(content);
+                var message = JsonSerializer.Deserialize<LeagueMessage>(content);
 
-                ProcessTeams(message.Teams.ToList()).GetAwaiter().GetResult();
+                ProcessLeagues(message.Leagues.ToList()).GetAwaiter().GetResult();
 
                 _channel.BasicAck(evt.DeliveryTag, false);
             };
 
-            _channel.BasicConsume("teams", false, consumer);
+            _channel.BasicConsume("leagues", false, consumer);
             return Task.CompletedTask;
         }
 
-        private async Task ProcessTeams(List<Team> teams)
+        private async Task ProcessLeagues(List<League> leagues)
         {
-            foreach (var team in teams)
-                await _repository.CreateOrUpdate(team);
+            foreach (var league in leagues)
+                await _repository.CreateOrUpdate(league);
         }
     }
 }

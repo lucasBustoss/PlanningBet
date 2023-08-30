@@ -35,8 +35,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PlanningBet.Stats.API", "sr
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Bets", "Bets", "{E09A6980-0FDF-4A5C-BFE8-D1C3EB3B20EB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlanningBet.Bets.API", "src\services\PlanningBet.Bets.API\PlanningBet.Bets.API.csproj", "{7A4D4554-CCC6-42C1-BE9E-7F404C1B063F}"
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlanningBet.Teams.API", "src\services\PlanningBet.Teams.API\PlanningBet.Teams.API.csproj", "{BF097669-54CE-491E-81D0-8F6B7975DA40}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PlanningBet.Bets.API", "src\services\PlanningBet.Bets.API\PlanningBet.Bets.API.csproj", "{7A4D4554-CCC6-42C1-BE9E-7F404C1B063F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PlanningBet.Teams.API", "src\services\PlanningBet.Teams.API\PlanningBet.Teams.API.csproj", "{BF097669-54CE-491E-81D0-8F6B7975DA40}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlanningBet.Leagues.API", "src\services\PlanningBet.Leagues.API\PlanningBet.Leagues.API.csproj", "{42792AAC-1FBF-4A43-AC7A-3AAE935CAD2A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -68,6 +71,10 @@ Global
 		{BF097669-54CE-491E-81D0-8F6B7975DA40}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BF097669-54CE-491E-81D0-8F6B7975DA40}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BF097669-54CE-491E-81D0-8F6B7975DA40}.Release|Any CPU.Build.0 = Release|Any CPU
+		{42792AAC-1FBF-4A43-AC7A-3AAE935CAD2A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{42792AAC-1FBF-4A43-AC7A-3AAE935CAD2A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{42792AAC-1FBF-4A43-AC7A-3AAE935CAD2A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{42792AAC-1FBF-4A43-AC7A-3AAE935CAD2A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -90,6 +97,7 @@ Global
 		{E09A6980-0FDF-4A5C-BFE8-D1C3EB3B20EB} = {5E5E0FC0-C135-4890-8CF8-0919BF7AFA3B}
 		{7A4D4554-CCC6-42C1-BE9E-7F404C1B063F} = {E09A6980-0FDF-4A5C-BFE8-D1C3EB3B20EB}
 		{BF097669-54CE-491E-81D0-8F6B7975DA40} = {E1FE5BF1-1198-46EC-95E8-047C29211A1D}
+		{42792AAC-1FBF-4A43-AC7A-3AAE935CAD2A} = {FD6D7C2C-7B2A-4F96-9AEB-EB99FEFC0D9D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {82CF3150-EEB6-478B-AA80-D3FCA93C44BE}

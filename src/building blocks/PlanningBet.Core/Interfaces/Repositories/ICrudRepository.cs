@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace PlanningBet.Core.Interfaces.Repositories;
+﻿namespace PlanningBet.Core.Interfaces.Repositories;
 
 public interface ICrudRepository<TEntity, TResponse>
 {
