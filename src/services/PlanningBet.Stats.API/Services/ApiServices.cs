@@ -1,9 +1,10 @@
-﻿using PlanningBet.Stats.API.Mapper;
+﻿using Microsoft.AspNetCore.Http;
+using PlanningBet.Stats.API.Mapper;
 using PlanningBet.Stats.API.Messages;
 using PlanningBet.Stats.API.Models;
 using PlanningBet.Stats.API.Models.ApiResponse;
+using PlanningBet.Stats.API.Models.ApiResponse.Fixtures;
 using PlanningBet.Stats.API.Models.ApiResponse.Leagues;
-using PlanningBet.Stats.API.Models.ApiResponse.Leagues.LeagueMatches;
 using PlanningBet.Stats.API.Models.ApiResponse.Leagues.LeagueStanding;
 using PlanningBet.Stats.API.Models.ApiResponse.Leagues.LeagueStatsInfo;
 using PlanningBet.Stats.API.Models.ApiResponse.Teams.TeamsResponse;
@@ -12,6 +13,7 @@ using PlanningBet.Stats.API.Models.Model.Leagues;
 using PlanningBet.Stats.API.Models.Model.Leagues.Matches;
 using PlanningBet.Stats.API.Models.Model.Leagues.Standing;
 using PlanningBet.Stats.API.Models.Model.Teams;
+using PlanningBet.Stats.API.Models.Model.Teams.TeamMatches;
 using System.Text;
 
 namespace PlanningBet.Stats.API.Services
@@ -27,8 +29,8 @@ namespace PlanningBet.Stats.API.Services
         public ApiServices(IMessageSender messageSender, IConfiguration configuration)
         {
             _apiUrl = configuration.GetValue<string>("FootyStats:url");
-            _apiKey = configuration.GetValue<string>("FootyStats:authKeyTest");
             _syncMode = configuration.GetValue<string>("FootyStats:syncMode");
+            _apiKey = _syncMode == "test" ? configuration.GetValue<string>("FootyStats:authKeyTest") : configuration.GetValue<string>("FootyStats:authKey");
 
             _httpClient = new HttpClient() { BaseAddress = new Uri(_apiUrl) };
             _messageSender = messageSender ?? throw new ArgumentNullException(nameof(messageSender));
@@ -39,6 +41,7 @@ namespace PlanningBet.Stats.API.Services
             var leagues = await GetLeagues();
             var teams = await GetTeams(leagues);
 
+            GetFixtures(leagues);
             GetLeagueStanding(leagues);
         }
 
@@ -52,9 +55,6 @@ namespace PlanningBet.Stats.API.Services
 
             if (_syncMode != "test")
                 queryString.Append($"&chosen_leagues_only=true");
-
-            //chosen_leagues_only = _syncMode == "test" ? (bool?)null : true,
-            //country = _syncMode == "test" ? 911 : (int?)null,
 
             var response = await _httpClient.GetFromJsonAsync<ApiResponseCollection<LeagueResponse>>($"league-list?{queryString}");
             var countries = await GetCountries();
@@ -101,13 +101,10 @@ namespace PlanningBet.Stats.API.Services
                     {
                         var country = countries.Where(c => c.CountryName == statsInfo.Country).FirstOrDefault();
 
-                        var matches = await GetLeagueMatches(season.LeagueSeasonId);
-                        League league = new League(leagueResponse, seasonName, season.LeagueSeasonId, statsInfo.Name, matches);
+                        League league = new League(leagueResponse, seasonName, season.LeagueSeasonId, statsInfo.Name);
                         leagues.Add(league);
                     }
                 }
-
-
             }
 
             #endregion
@@ -140,15 +137,20 @@ namespace PlanningBet.Stats.API.Services
             foreach (var league in leagues)
             {
                 var standingRequest = await GetStandingFromLeague(league.Code);
-                standings.Add(new LeagueStanding(standingRequest));
+                standings.Add(new LeagueStanding(league.Id, standingRequest));
             }
 
             _messageSender.SendMessage<LeagueStandingMessage>(standings.ToLeagueStandingMessage(), "standings");
         }
 
-        public void GetFixtures()
+        public async void GetFixtures(List<League> leagues)
         {
-            throw new NotImplementedException();
+            var leagueFixtures = await GetLeagueFixtures(leagues);
+            var currentFixtures = await GetCurrentFixtures(null, 1);
+
+            List<Fixture> fixtures = leagueFixtures.Union(currentFixtures).ToList();
+
+            _messageSender.SendMessage<FixtureMessage>(fixtures.ToFixtureMessage(), "fixtures");
         }
 
         public void GetLastStats()
@@ -180,7 +182,7 @@ namespace PlanningBet.Stats.API.Services
 
             teams.AddRange(response.Data);
 
-            if(currentPage != pages)
+            if (currentPage != pages)
             {
                 var newPage = currentPage + 1;
                 await GetTeamsFromLeague(seasonId, newPage, teams);
@@ -220,32 +222,64 @@ namespace PlanningBet.Stats.API.Services
             return response.Data;
         }
 
-        private async Task<List<LeagueMatches>> GetLeagueMatches(int seasonId)
+        private async Task<List<Fixture>> GetLeagueFixtures(List<League> leagues)
         {
-            bool isValidSeasonId = _syncMode != "test" || (_syncMode == "test" && (seasonId == 1625 || seasonId == 2012 || seasonId == 4759));
-            if (!isValidSeasonId) throw new InvalidDataException();
+            List<Fixture> fixtures = new List<Fixture>();
 
-            string queryString = $"key={_apiKey}&season_id={seasonId}";
-            var response = await _httpClient.GetFromJsonAsync<ApiResponse<List<LeagueMatchesResponse>>>($"league-matches?{queryString}");
-            List<LeagueMatchesResponse> leagueMatchesResponse;
-
-            if (response != null && response.Success && response.Pager != null && response.Pager.TotalResults > 0)
+            foreach (var league in leagues)
             {
-                leagueMatchesResponse = response.Data;
-                List<LeagueMatches> leagueMatches = new List<LeagueMatches>();
+                bool isValidSeasonId = _syncMode != "test" || (_syncMode == "test" && (league.Code == 1625 || league.Code == 2012 || league.Code == 4759));
+                if (!isValidSeasonId) throw new InvalidDataException();
 
-                foreach (var leagueMatchResponse in leagueMatchesResponse)
+                string queryString = $"key={_apiKey}&season_id={league.Code}";
+                var response = await _httpClient.GetFromJsonAsync<ApiResponse<List<FixtureResponse>>>($"league-matches?{queryString}");
+                List<FixtureResponse> leagueMatchesResponse;
+
+                if (response != null && response.Success && response.Pager != null && response.Pager.TotalResults > 0)
                 {
-                    LeagueMatches leagueMatch = new LeagueMatches(leagueMatchResponse);
-                    leagueMatches.Add(leagueMatch);
-                }
+                    leagueMatchesResponse = response.Data;
 
-                return leagueMatches;
+                    foreach (var leagueMatchResponse in leagueMatchesResponse)
+                    {
+                        Fixture leagueMatch = new Fixture(leagueMatchResponse);
+                        fixtures.Add(leagueMatch);
+                    }
+                }
+                else
+                {
+                    throw new ArgumentNullException();
+                }
             }
-            else
+
+            return fixtures;
+        }
+
+        private async Task<List<Fixture>> GetCurrentFixtures(List<Fixture> currentFixtures, int page)
+        {
+            List<Fixture> fixtures = currentFixtures ?? new List<Fixture>();
+
+            for (int i = -7; i <= 7; i++)
             {
-                throw new ArgumentNullException();
+                var date = DateTime.Now.AddDays(i).ToString("yyyy-MM-dd");
+                var queryString = $"key={_apiKey}&timezone=America/Sao_Paulo&date={date}&page={page}";
+                var response = await _httpClient.GetFromJsonAsync<ApiResponse<List<FixtureResponse>>>($"todays-matches?{queryString}");
+
+                if(response != null && response.Success && response.Pager != null && response.Pager.TotalResults > 0)
+                {
+                    var fixtureResponse = response.Data;
+
+                    foreach (var leagueMatchResponse in fixtureResponse)
+                    {
+                        Fixture leagueMatch = new Fixture(leagueMatchResponse);
+                        fixtures.Add(leagueMatch);
+                    }
+
+                    if (response.Pager.CurrentPage > response.Pager.MaxPage)
+                        await GetCurrentFixtures(fixtures, page + 1);
+                }
             }
+
+            return fixtures;
         }
 
         #endregion

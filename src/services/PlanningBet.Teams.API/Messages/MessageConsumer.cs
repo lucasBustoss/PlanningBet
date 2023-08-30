@@ -45,7 +45,7 @@ namespace PlanningBet.Teams.API.Messages
                 _channel.BasicAck(evt.DeliveryTag, false);
             };
 
-            _channel.BasicConsume("teams", false, consumer);
+            //_channel.BasicConsume("teams", false, consumer);
             return Task.CompletedTask;
         }
 

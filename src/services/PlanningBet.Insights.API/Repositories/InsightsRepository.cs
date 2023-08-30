@@ -1,4 +1,4 @@
-﻿using PlanningBet.Insights.API.Infra.Context;
+﻿using PlanningBet.Insights.API.Database;
 using PlanningBet.Insights.API.Models;
 
 namespace PlanningBet.Insights.API.Repositories

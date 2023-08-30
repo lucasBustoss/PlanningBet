@@ -2,7 +2,7 @@
 
 namespace PlanningBet.Stats.API.Models.Model.Leagues.Matches
 {
-    public class LeagueMatchesTeam
+    public class FixtureTeam
     {
         public int Code { get; set; }
 

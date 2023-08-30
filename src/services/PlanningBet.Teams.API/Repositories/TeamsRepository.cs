@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PlanningBet.Teams.API.Database;
 using PlanningBet.Teams.API.Entities;
-using PlanningBet.Teams.API.Migrations;
 
 namespace PlanningBet.Teams.API.Repositories
 {
@@ -19,7 +18,6 @@ namespace PlanningBet.Teams.API.Repositories
             try
             {
                 var existentTeam = await _context.Teams.FirstOrDefaultAsync(p => p.Code == team.Code);
-
 
                 if (existentTeam == null)
                     _context.Teams.Add(team);

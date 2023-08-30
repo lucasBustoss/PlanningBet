@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PlanningBet.Insights.API.Models;
 
-namespace PlanningBet.Insights.API.Infra.Context
+namespace PlanningBet.Insights.API.Database
 {
     public class InsightsDbContext : DbContext
     {
@@ -23,7 +23,7 @@ namespace PlanningBet.Insights.API.Infra.Context
                    Value = "wins",
                    Type = "sequency",
                    Active = true
-               }, 
+               },
                new InsightEntity()
                {
                    Id = Guid.NewGuid(),
@@ -31,7 +31,7 @@ namespace PlanningBet.Insights.API.Infra.Context
                    Value = "loses",
                    Type = "sequency",
                    Active = true
-               }, 
+               },
                new InsightEntity()
                {
                    Id = Guid.NewGuid(),
@@ -39,7 +39,7 @@ namespace PlanningBet.Insights.API.Infra.Context
                    Value = "invincibility",
                    Type = "sequency",
                    Active = true
-               }, 
+               },
                new InsightEntity()
                {
                    Id = Guid.NewGuid(),
@@ -47,7 +47,7 @@ namespace PlanningBet.Insights.API.Infra.Context
                    Value = "scored",
                    Type = "sequency",
                    Active = true
-               }, 
+               },
                new InsightEntity()
                {
                    Id = Guid.NewGuid(),
@@ -55,7 +55,7 @@ namespace PlanningBet.Insights.API.Infra.Context
                    Value = "conceded",
                    Type = "sequency",
                    Active = true
-               }, 
+               },
                new InsightEntity()
                {
                    Id = Guid.NewGuid(),
@@ -63,7 +63,7 @@ namespace PlanningBet.Insights.API.Infra.Context
                    Value = "bttsYes",
                    Type = "sequency",
                    Active = true
-               }, 
+               },
                new InsightEntity()
                {
                    Id = Guid.NewGuid(),
@@ -71,7 +71,7 @@ namespace PlanningBet.Insights.API.Infra.Context
                    Value = "bttsNo",
                    Type = "sequency",
                    Active = false
-               }, 
+               },
                new InsightEntity()
                {
                    Id = Guid.NewGuid(),
@@ -79,7 +79,7 @@ namespace PlanningBet.Insights.API.Infra.Context
                    Value = "over25",
                    Type = "sequency",
                    Active = true
-               }, 
+               },
                new InsightEntity()
                {
                    Id = Guid.NewGuid(),
@@ -87,7 +87,7 @@ namespace PlanningBet.Insights.API.Infra.Context
                    Value = "under25",
                    Type = "sequency",
                    Active = false
-               }, 
+               },
                new InsightEntity()
                {
                    Id = Guid.NewGuid(),
@@ -95,7 +95,7 @@ namespace PlanningBet.Insights.API.Infra.Context
                    Value = "corner",
                    Type = "sequency",
                    Active = true
-               }, 
+               },
                new InsightEntity()
                {
                    Id = Guid.NewGuid(),
@@ -103,7 +103,7 @@ namespace PlanningBet.Insights.API.Infra.Context
                    Value = "cards",
                    Type = "sequency",
                    Active = true
-               }, 
+               },
                new InsightEntity()
                {
                    Id = Guid.NewGuid(),
@@ -111,7 +111,7 @@ namespace PlanningBet.Insights.API.Infra.Context
                    Value = "ppg",
                    Type = "comparativeHomeAway",
                    Active = true
-               }, 
+               },
                new InsightEntity()
                {
                    Id = Guid.NewGuid(),
@@ -119,7 +119,7 @@ namespace PlanningBet.Insights.API.Infra.Context
                    Value = "winsPercentage",
                    Type = "comparativeHomeAway",
                    Active = true
-               }, 
+               },
                new InsightEntity()
                {
                    Id = Guid.NewGuid(),
@@ -127,7 +127,7 @@ namespace PlanningBet.Insights.API.Infra.Context
                    Value = "firstToScore",
                    Type = "comparativeHomeAway",
                    Active = true
-               }, 
+               },
                new InsightEntity()
                {
                    Id = Guid.NewGuid(),
@@ -135,7 +135,7 @@ namespace PlanningBet.Insights.API.Infra.Context
                    Value = "scoredHomeAway",
                    Type = "comparativeHomeAway",
                    Active = true
-               }, 
+               },
                new InsightEntity()
                {
                    Id = Guid.NewGuid(),
@@ -143,7 +143,7 @@ namespace PlanningBet.Insights.API.Infra.Context
                    Value = "concededHomeAway",
                    Type = "comparativeHomeAway",
                    Active = true
-               }, 
+               },
                new InsightEntity()
                {
                    Id = Guid.NewGuid(),
@@ -151,7 +151,7 @@ namespace PlanningBet.Insights.API.Infra.Context
                    Value = "shots",
                    Type = "comparativeHomeAway",
                    Active = true
-               }, 
+               },
                new InsightEntity()
                {
                    Id = Guid.NewGuid(),
@@ -159,7 +159,7 @@ namespace PlanningBet.Insights.API.Infra.Context
                    Value = "favorXG",
                    Type = "comparativeHomeAway",
                    Active = true
-               }, 
+               },
                new InsightEntity()
                {
                    Id = Guid.NewGuid(),
@@ -167,7 +167,7 @@ namespace PlanningBet.Insights.API.Infra.Context
                    Value = "concededXG",
                    Type = "comparativeHomeAway",
                    Active = false
-               }, 
+               },
                new InsightEntity()
                {
                    Id = Guid.NewGuid(),
@@ -175,7 +175,7 @@ namespace PlanningBet.Insights.API.Infra.Context
                    Value = "goalsScoredFirstHalf",
                    Type = "comparativeGoals",
                    Active = true
-               }, 
+               },
                new InsightEntity()
                {
                    Id = Guid.NewGuid(),
@@ -185,7 +185,7 @@ namespace PlanningBet.Insights.API.Infra.Context
                    Active = true
                }
             );
-            
+
             #endregion
         }
     }
