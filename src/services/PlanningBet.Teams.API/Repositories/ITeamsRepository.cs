@@ -1,10 +1,9 @@
-﻿using PlanningBet.Teams.API.Entities;
+﻿using PlanningBet.Core.Interfaces.Repositories;
+using PlanningBet.Teams.API.Entities;
 
 namespace PlanningBet.Teams.API.Repositories
 {
-    public interface ITeamsRepository
+    public interface ITeamsRepository : IMessageRepository<Team>
     {
-        IEnumerable<Team> FindAll();
-        Task<bool> CreateOrUpdate(Team team);
     }
 }

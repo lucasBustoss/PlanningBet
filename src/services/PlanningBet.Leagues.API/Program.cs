@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using PlanningBet.Core.Config;
-using PlanningBet.Teams.API.Database;
-using PlanningBet.Teams.API.Messages;
-using PlanningBet.Teams.API.Repositories;
+using PlanningBet.Leagues.API.Database;
+using PlanningBet.Leagues.API.Messages;
+using PlanningBet.Leagues.API.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,19 +18,18 @@ builder.Services.AddJwtConfig(builder.Configuration);
 #region DbContextConfig
 
 var connection = builder.Configuration.GetConnectionString("Postgres");
-builder.Services.AddDbContext<TeamsDbContext>(options => options.UseNpgsql(connection));
+builder.Services.AddDbContext<LeaguesDbContext>(options => options.UseNpgsql(connection));
 
-var dbContextBuilder = new DbContextOptionsBuilder<TeamsDbContext>();
+var dbContextBuilder = new DbContextOptionsBuilder<LeaguesDbContext>();
 dbContextBuilder.UseNpgsql(connection);
 
 #endregion
 
 #region RepositoriesConfig
 
-builder.Services.AddSingleton(new TeamsRepository(dbContextBuilder.Options));
+builder.Services.AddSingleton(new LeaguesRepository(dbContextBuilder.Options));
 
 #endregion
-
 builder.Services.AddHostedService<MessageConsumer>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
