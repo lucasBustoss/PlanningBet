@@ -38,14 +38,16 @@ namespace PlanningBet.Stats.API.Services
 
         public async void GetAllStats()
         {
-            var leagues = await GetLeagues();
-            var teams = await GetTeams(leagues);
+            var countries = await GetCountries();
 
-            GetFixtures(leagues);
-            GetLeagueStanding(leagues);
+            var leagues = await GetLeagues(countries);
+            var teams = await GetTeams(countries, leagues);
+
+            //GetFixtures(leagues);
+            //GetLeagueStanding(leagues);
         }
 
-        public async Task<List<League>> GetLeagues()
+        public async Task<List<League>> GetLeagues(List<Country> countries)
         {
             var queryString = new StringBuilder();
             queryString.Append($"key={_apiKey}");
@@ -57,7 +59,6 @@ namespace PlanningBet.Stats.API.Services
                 queryString.Append($"&chosen_leagues_only=true");
 
             var response = await _httpClient.GetFromJsonAsync<ApiResponseCollection<LeagueResponse>>($"league-list?{queryString}");
-            var countries = await GetCountries();
             var leaguesResponse = response.Data;
             List<League> leagues = new List<League>();
 
@@ -67,7 +68,7 @@ namespace PlanningBet.Stats.API.Services
 
             foreach (var leagueResponse in leaguesResponse)
             {
-                if (_syncMode == "test" && leagueResponse.LeagueFullName != "England Premier League")
+                if (_syncMode == "test" && leagueResponse.LeagueName != "England Premier League")
                     continue;
 
                 LeagueSeason season;
@@ -87,13 +88,23 @@ namespace PlanningBet.Stats.API.Services
                     season = leagueResponse.Seasons.ToList()[index];
                 }
 
+                var isQualificationLeague = 
+                  (
+                    leagueResponse.LeagueName.ToLower().Contains("qualification") && 
+                    season.LeagueSeasonYear == 2026
+                  ) || 
+                  (
+                    season.LeagueSeasonYear == 2024 && 
+                    leagueResponse.LeagueName.ToLower().Contains("qualifiers")
+                  );
+
                 var seasonYear = season.LeagueSeasonYear;
                 var seasonName =
                     seasonYear.ToString().Length == 8 ?
                         $"{seasonYear.ToString().Substring(0, 4)}/{seasonYear.ToString().Substring(4, 4)}" :
                         seasonYear.ToString();
 
-                if (_syncMode == "test" || seasonYear == actualYear || seasonYear.ToString().Contains(actualYear.ToString()))
+                if (_syncMode == "test" || isQualificationLeague || seasonYear == actualYear || seasonYear.ToString().Contains(actualYear.ToString()))
                 {
                     var statsInfo = await GetLeagueStatsInfo(season.LeagueSeasonId);
 
@@ -101,7 +112,7 @@ namespace PlanningBet.Stats.API.Services
                     {
                         var country = countries.Where(c => c.CountryName == statsInfo.Country).FirstOrDefault();
 
-                        League league = new League(leagueResponse, seasonName, season.LeagueSeasonId, statsInfo.Name);
+                        League league = new League(leagueResponse, seasonName, season.LeagueSeasonId, statsInfo.NamePt);
                         leagues.Add(league);
                     }
                 }
@@ -109,21 +120,41 @@ namespace PlanningBet.Stats.API.Services
 
             #endregion
 
+            var existsConmebol = leagues.Find(l => l.Code == 5163);
+
+
             _messageSender.SendMessage<LeagueMessage>(leagues.ToLeagueMessage(), "leagues");
 
             return leagues;
         }
 
-        public async Task<List<Team>> GetTeams(List<League> leagues)
+        public async Task<List<Team>> GetTeams(List<Country> countries, List<League> leagues)
         {
             List<Team> teams = new List<Team>();
-            foreach (var league in leagues)
+            try
             {
-                var teamsLeague = await GetTeamsFromLeague(league.Code, 1, null);
-                teamsLeague.ForEach(tl =>
+                foreach (var league in leagues)
                 {
-                    teams.Add(new Team(tl));
-                });
+                    var teamsLeague = await GetTeamsFromLeague(league.Code, 1, null);
+                    teamsLeague.ForEach(tl =>
+                    {
+                        if (tl.TeamCompetitionType == "International")
+                        {
+                            var country = countries.Find(c => c.CountryName == tl.TeamCountry);
+
+                            if (country != null)
+                                tl.TeamCleanName = country.CountryNamePortuguese;
+                        }
+
+                        var team = new Team(tl);
+
+                        teams.Add(new Team(tl));
+                    });
+                }
+            }
+            catch (Exception err)
+            {
+                Console.WriteLine(err);
             }
 
             _messageSender.SendMessage<TeamMessage>(teams.ToTeamMessage(), "teams");
@@ -264,7 +295,7 @@ namespace PlanningBet.Stats.API.Services
                 var queryString = $"key={_apiKey}&timezone=America/Sao_Paulo&date={date}&page={page}";
                 var response = await _httpClient.GetFromJsonAsync<ApiResponse<List<FixtureResponse>>>($"todays-matches?{queryString}");
 
-                if(response != null && response.Success && response.Pager != null && response.Pager.TotalResults > 0)
+                if (response != null && response.Success && response.Pager != null && response.Pager.TotalResults > 0)
                 {
                     var fixtureResponse = response.Data;
 

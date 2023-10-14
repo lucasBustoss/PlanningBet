@@ -31,7 +31,7 @@ namespace PlanningBet.Core.Config
 
             app.UseAuthConfiguration();
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
 
             app.UseAuthentication();
             app.UseAuthorization();

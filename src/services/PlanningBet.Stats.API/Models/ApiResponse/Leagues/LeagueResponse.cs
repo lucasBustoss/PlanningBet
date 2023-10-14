@@ -4,13 +4,10 @@ namespace PlanningBet.Stats.API.Models.ApiResponse.Leagues
 {
     public class LeagueResponse
     {
-        [JsonPropertyName("name")]
-        public string LeagueFullName { get; set; }
-
         [JsonPropertyName("country")]
         public string LeagueCountry { get; set; }
 
-        [JsonPropertyName("league_name")]
+        [JsonPropertyName("name")]
         public string LeagueName { get; set; }
 
         [JsonPropertyName("image")]

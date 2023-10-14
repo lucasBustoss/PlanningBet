@@ -6,7 +6,7 @@ namespace PlanningBet.Stats.API.Models.Model.Leagues
 {
     public class League : BaseModel
     {
-        public League(LeagueResponse leagueResponse, string seasonName, int seasonId, string imageUrl)
+        public League(LeagueResponse leagueResponse, string seasonName, int seasonId, string namePt)
         {
             Id = Guid.NewGuid();
             Code = seasonId;
@@ -14,7 +14,7 @@ namespace PlanningBet.Stats.API.Models.Model.Leagues
             Country = leagueResponse.LeagueCountry;
             Image = leagueResponse.LeagueImage;
             SeasonName = seasonName;
-            ImageUrl = imageUrl;
+            NamePt = namePt;
         }
 
         public int Code { get; private set; }
@@ -22,6 +22,6 @@ namespace PlanningBet.Stats.API.Models.Model.Leagues
         public string Country { get; private set; }
         public string Image { get; private set; }
         public string SeasonName { get; private set; }
-        public string ImageUrl { get; private set; }
+        public string NamePt { get; private set; }
     }
 }

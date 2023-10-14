@@ -39,7 +39,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PlanningBet.Bets.API", "src
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PlanningBet.Teams.API", "src\services\PlanningBet.Teams.API\PlanningBet.Teams.API.csproj", "{BF097669-54CE-491E-81D0-8F6B7975DA40}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlanningBet.Leagues.API", "src\services\PlanningBet.Leagues.API\PlanningBet.Leagues.API.csproj", "{42792AAC-1FBF-4A43-AC7A-3AAE935CAD2A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PlanningBet.Leagues.API", "src\services\PlanningBet.Leagues.API\PlanningBet.Leagues.API.csproj", "{42792AAC-1FBF-4A43-AC7A-3AAE935CAD2A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

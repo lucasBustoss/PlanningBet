@@ -12,7 +12,7 @@ using PlanningBet.Leagues.API.Database;
 namespace PlanningBet.Leagues.API.Migrations
 {
     [DbContext(typeof(LeaguesDbContext))]
-    [Migration("20230830212833_AddLeagues")]
+    [Migration("20231013183156_AddLeagues")]
     partial class AddLeagues
     {
         /// <inheritdoc />
@@ -29,29 +29,37 @@ namespace PlanningBet.Leagues.API.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
 
                     b.Property<int>("Code")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("code");
 
                     b.Property<string>("Country")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("country");
 
                     b.Property<string>("Image")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("image");
 
                     b.Property<string>("ImageUrl")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("image_url");
 
                     b.Property<string>("Name")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("name");
 
                     b.Property<string>("SeasonName")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("season_name");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("p_k_leagues");
 
-                    b.ToTable("Leagues");
+                    b.ToTable("leagues");
                 });
 #pragma warning restore 612, 618
         }

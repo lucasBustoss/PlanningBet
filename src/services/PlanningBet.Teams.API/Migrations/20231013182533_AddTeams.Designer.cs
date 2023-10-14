@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using PlanningBet.Teams.API.Database;
@@ -11,9 +12,11 @@ using PlanningBet.Teams.API.Database;
 namespace PlanningBet.Teams.API.Migrations
 {
     [DbContext(typeof(TeamsDbContext))]
-    partial class TeamsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231013182533_AddTeams")]
+    partial class AddTeams
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

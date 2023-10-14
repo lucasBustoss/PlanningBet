@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PlanningBet.Bets.API.Database;
 using PlanningBet.Bets.API.Models.Entity;
+using PlanningBet.Bets.API.Models.Entity.Views;
 
 namespace PlanningBet.Insights.API.Repositories
 {
@@ -71,9 +72,9 @@ namespace PlanningBet.Insights.API.Repositories
             return bets;
         }
 
-        public IEnumerable<EventEntity> FindAllEvents()
+        public IEnumerable<EventWithTeamView> FindAllEvents()
         {
-            List<EventEntity> events = _context.Events.ToList();
+            List<EventWithTeamView> events = _context.EventsWithTeamView.OrderByDescending(e => e.Date).ToList();
             return events;
         }
 

@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using PlanningBet.Teams.API.Database;
-using PlanningBet.Teams.API.Entities;
+﻿using PlanningBet.Teams.API.Entities;
 using PlanningBet.Teams.API.Repositories;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
@@ -35,12 +33,12 @@ namespace PlanningBet.Teams.API.Messages
         {
             stoppingToken.ThrowIfCancellationRequested();
             var consumer = new EventingBasicConsumer(_channel);
-            consumer.Received += (channel, evt) =>
+            consumer.Received += async (channel, evt) =>
             {
                 var content = Encoding.UTF8.GetString(evt.Body.ToArray());
                 var message = JsonSerializer.Deserialize<TeamMessage>(content);
 
-                ProcessTeams(message.Teams.ToList()).GetAwaiter().GetResult();
+                await ProcessTeams(message.Teams.ToList());
 
                 _channel.BasicAck(evt.DeliveryTag, false);
             };

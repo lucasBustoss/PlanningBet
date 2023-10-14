@@ -13,6 +13,9 @@ namespace PlanningBet.Stats.API.Models.ApiResponse.Leagues.LeagueStatsInfo
         [JsonPropertyName("name")]
         public string LeagueName { get; set; }
 
+        [JsonPropertyName("name_pt")]
+        public string LeagueNamePortuguese { get; set; }
+
         [JsonPropertyName("image")]
         public string LeagueImage { get; set; }
     }
